@@ -1,0 +1,26 @@
+<form [formGroup]="form" class="form-box">
+  <input type="text"
+         placeholder="Enter the name of the city"
+         matInput
+         formControlName="city"
+         [matAutocomplete]="auto">
+  <mat-autocomplete #auto>
+    <mat-option *ngFor="let item of (searchCities$ | async)" [value]="item">
+      {{item.cityName}}
+    </mat-option>
+    <mat-option
+      *ngIf="(searchCities$ | async)?.length === 0 && !!form.controls.city.value && !(isLoadingCities$ | async)"
+      disabled
+      class="no-results"
+    >
+      Not found
+    </mat-option>
+  </mat-autocomplete>
+
+  <mat-button-toggle-group formControlName="filter">
+    <mat-button-toggle [value]="EMode.daily">Daily</mat-button-toggle>
+    <mat-button-toggle [value]="EMode.hourly">Hourly</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <weather-table [weatherList]="weatherList$ | async" [mode]="form.controls.filter.value"></weather-table>
+</form>
